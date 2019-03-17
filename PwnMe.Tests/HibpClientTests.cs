@@ -49,7 +49,36 @@ namespace PwnMe.Tests
             Action act = () => client.GetAccountPastes(account).Wait();
 
             act.Should().Throw<HibpApiErrorException>()
-                        .WithMessage("The account does not comply with an acceptable format (i.e. it's an empty string).");
+                        .WithMessage("The account does not comply with an acceptable format.");
+        }
+
+        [Theory]
+        [InlineData("test@example.com")]
+        public async Task GetAccountBreaches_ValidAccountGiven_ShouldPass(string account)
+        {
+            var client = new HibpClient();
+            var breaches = await client.GetAccountBreaches(account);
+            breaches.Count.Should().BeGreaterThan(0);
+        }
+
+        [Theory]
+        [InlineData("test@example.com", "000webhost.com")]
+        public async Task GetAccountBreaches_FilteredForDomain_ValidAccountGiven_ShouldPass(string account, string domain)
+        {
+            var client = new HibpClient();
+            var breaches = await client.GetAccountBreaches(account, domain: domain);
+            breaches.Count.Should().Be(1);
+        }
+
+        [Theory]
+        [InlineData("test@example.com")]
+        public async Task GetAccountBreaches_TruncatedResponse_ValidAccountGiven_ShouldPass(string account)
+        {
+            var client = new HibpClient();
+            var breaches = await client.GetAccountBreaches(account, truncated: true);
+            breaches.Count.Should().BeGreaterThan(0);
+            breaches[0].Name.Should().NotBeNull();
+            breaches[0].Title.Should().BeNull();
         }
 
     }
