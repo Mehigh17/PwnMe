@@ -13,7 +13,7 @@ using PwnMe.Models;
 
 namespace PwnMe
 {
-    public class HibpClient : IHibpClient
+    public class PwnMeClient : IPwnMeClient
     {
 
         private const string ApiRangeSearchEndpointUri = "https://api.pwnedpasswords.com/range";
@@ -24,7 +24,7 @@ namespace PwnMe
         private readonly HttpClient _httpClient;
         private readonly SHA1 _hasher;
 
-        public HibpClient()
+        public PwnMeClient()
         {
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "PwnMe-C#-API-Wrapper");
@@ -151,7 +151,7 @@ namespace PwnMe
                     message = $"Unhandled result from the API. (StatusCode {code})";
                     break;
             }
-            return new HibpApiErrorException(message);
+            return new PwnMeApiErrorException(message);
         }
 
     }

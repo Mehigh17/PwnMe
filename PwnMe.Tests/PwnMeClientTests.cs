@@ -7,11 +7,11 @@ using Xunit;
 
 namespace PwnMe.Tests
 {
-    public class HibpClientTests : IClassFixture<HibpClient>
+    public class PwnMeClientTests : IClassFixture<PwnMeClient>
     {
 
-        private readonly HibpClient _client;
-        public HibpClientTests(HibpClient client)
+        private readonly PwnMeClient _client;
+        public PwnMeClientTests(PwnMeClient client)
         {
             _client = client;
         }
@@ -46,7 +46,7 @@ namespace PwnMe.Tests
         public void GetAccountPastes_InvalidAccountGiven_ShouldThrowException(string account)
         {
             Action act = () => _client.GetAccountPastes(account).Wait();
-            act.Should().Throw<HibpApiErrorException>()
+            act.Should().Throw<PwnMeApiErrorException>()
                         .WithMessage("The account does not comply with an acceptable format.");
         }
 

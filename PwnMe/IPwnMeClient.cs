@@ -5,7 +5,7 @@ using PwnMe.Models;
 
 namespace PwnMe
 {
-    public interface IHibpClient : IDisposable
+    public interface IPwnMeClient : IDisposable
     {
 
         /// <summary>
