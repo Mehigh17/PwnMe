@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Newtonsoft.Json;
 using PwnMe.Exceptions;
 using PwnMe.Models;
@@ -80,19 +81,56 @@ namespace PwnMe
                 return pastes;
             }
 
-            switch (response.StatusCode)
+            throw GetApiException(response.StatusCode);
+        }
+
+        public async Task<IReadOnlyList<AccountBreach>> GetAccountBreaches(string account, bool truncated = false, string domain = "", bool includeUnverified = false)
+        {
+            var uriBuilder = new UriBuilder($"{ApiEndpointUri}/breachedaccount/{account}");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["truncateResponse"] = truncated.ToString();
+            parameters["includeUnverified"] = includeUnverified.ToString();
+            if (!string.IsNullOrEmpty(domain))
+            {
+                parameters["domain"] = domain;
+            }
+            uriBuilder.Query = parameters.ToString();
+
+            var response = await _httpClient.GetAsync(uriBuilder.Uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var breaches = JsonConvert.DeserializeObject<AccountBreach[]>(data);
+                return breaches;
+            }
+
+            throw GetApiException(response.StatusCode);
+        }
+
+        private Exception GetApiException(HttpStatusCode code)
+        {
+            var message = String.Empty;
+            switch (code)
             {
                 case HttpStatusCode.BadRequest:
-                    throw new HibpApiErrorException("The account does not comply with an acceptable format (i.e. it's an empty string).");
+                    message = "The account does not comply with an acceptable format.";
+                    break;
                 case HttpStatusCode.Forbidden:
-                    throw new HibpApiErrorException("No user agent has been specified in the request.");
+                    message = "No user agent has been specified in the request.";
+                    break;
                 case HttpStatusCode.NotFound:
-                    throw new HibpApiErrorException("The account could not be found and has therefore not been pwned.");
+                    message = "The account could not be found.";
+                    break;
                 case (HttpStatusCode)429:
-                    throw new HibpApiErrorException("The rate limit has been exceeded.");
+                    message = "The rate limit has been exceeded.";
+                    break;
                 default:
-                    throw new Exception($"Unhandled result from the API. (StatusCode {response.StatusCode})");
+                    message = $"Unhandled result from the API. (StatusCode {code})";
+                    break;
             }
+            return new HibpApiErrorException(message);
         }
+
     }
 }

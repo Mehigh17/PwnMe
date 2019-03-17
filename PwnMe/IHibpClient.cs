@@ -28,5 +28,16 @@ namespace PwnMe
         /// <param name="password">Plain text password</param>
         /// <returns></returns>
         Task<bool> IsPwned(string password);
+
+        /// <summary>
+        /// Gets all the breaches for a given account.
+        /// </summary>
+        /// <param name="account">Valid email address</param>
+        /// <param name="truncated">Returns only the name of the breach.</param>
+        /// <param name="domain">Filters the result set to only breaches against the domain specified.</param>
+        /// <param name="includeUnverified">Returns breaches that have been flagged as "unverified".</param>
+        /// <returns>A list of account breaches</returns>
+        Task<IReadOnlyList<AccountBreach>> GetAccountBreaches(string account, bool truncated = false, string domain = "", bool includeUnverified = false);
+
     }
 }
