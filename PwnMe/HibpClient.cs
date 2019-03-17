@@ -108,6 +108,28 @@ namespace PwnMe
             throw GetApiException(response.StatusCode);
         }
 
+        public async Task<IReadOnlyList<Breach>> GetBreaches(string domain = "")
+        {
+            var uriBuilder = new UriBuilder($"{ApiEndpointUri}/breaches");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            if (!string.IsNullOrEmpty(domain))
+            {
+                parameters["domain"] = domain;
+            }
+            uriBuilder.Query = parameters.ToString();
+
+            var response = await _httpClient.GetAsync(uriBuilder.Uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var breaches = JsonConvert.DeserializeObject<Breach[]>(data);
+                return breaches;
+            }
+
+            throw GetApiException(response.StatusCode);
+        }
+
         private Exception GetApiException(HttpStatusCode code)
         {
             var message = String.Empty;

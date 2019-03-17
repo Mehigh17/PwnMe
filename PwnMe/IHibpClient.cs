@@ -39,5 +39,11 @@ namespace PwnMe
         /// <returns>A list of account breaches</returns>
         Task<IReadOnlyList<Breach>> GetAccountBreaches(string account, bool truncated = false, string domain = "", bool includeUnverified = false);
 
+        /// <summary>
+        /// Gets all the breaches in the HIBP database.
+        /// </summary>
+        /// <param name="domain">Filters the result set to only breaches against the domain specified.</param>
+        /// <returns>A list of all the breaches</returns>
+        Task<IReadOnlyList<Breach>> GetBreaches(string domain = "");
     }
 }
