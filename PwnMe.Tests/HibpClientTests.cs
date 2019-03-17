@@ -7,7 +7,7 @@ using Xunit;
 
 namespace PwnMe.Tests
 {
-    public class PasswordValidatorTests
+    public class HibpClientTests
     {
 
         [Theory]
