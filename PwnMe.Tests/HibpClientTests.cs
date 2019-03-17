@@ -7,17 +7,21 @@ using Xunit;
 
 namespace PwnMe.Tests
 {
-    public class HibpClientTests
+    public class HibpClientTests : IClassFixture<HibpClient>
     {
+
+        private readonly HibpClient _client;
+        public HibpClientTests(HibpClient client)
+        {
+            _client = client;
+        }
 
         [Theory]
         [InlineData("test123")]
         [InlineData("password")]
         public async Task IsPwned_BreachedPasswordGiven_ShouldPass(string password)
         {
-            var service = new HibpClient();
-            var isValid = await service.IsPwned(password);
-
+            var isValid = await _client.IsPwned(password);
             isValid.Should().BeTrue();
         }
 
@@ -25,9 +29,7 @@ namespace PwnMe.Tests
         [InlineData("test123", 96105)]
         public async Task GetOccurences_BreachedPasswordGiven_ShouldPass(string password, int minimumExpectedOccurencesCount)
         {
-            var service = new HibpClient();
-            var isValid = await service.GetOccurences(password);
-
+            var isValid = await _client.GetOccurences(password);
             isValid.Should().BeGreaterOrEqualTo(minimumExpectedOccurencesCount);
         }
 
@@ -35,9 +37,7 @@ namespace PwnMe.Tests
         [InlineData("test@example.com")]
         public async Task GetAccountPastes_ValidAccountGiven_ShouldPass(string account)
         {
-            var client = new HibpClient();
-            var pastes = await client.GetAccountPastes(account);
-
+            var pastes = await _client.GetAccountPastes(account);
             pastes.Count.Should().BeGreaterThan(0);
         }
 
@@ -45,9 +45,7 @@ namespace PwnMe.Tests
         [InlineData("invalidemail")]
         public void GetAccountPastes_InvalidAccountGiven_ShouldThrowException(string account)
         {
-            var client = new HibpClient();
-            Action act = () => client.GetAccountPastes(account).Wait();
-
+            Action act = () => _client.GetAccountPastes(account).Wait();
             act.Should().Throw<HibpApiErrorException>()
                         .WithMessage("The account does not comply with an acceptable format.");
         }
@@ -56,8 +54,7 @@ namespace PwnMe.Tests
         [InlineData("test@example.com")]
         public async Task GetAccountBreaches_ValidAccountGiven_ShouldPass(string account)
         {
-            var client = new HibpClient();
-            var breaches = await client.GetAccountBreaches(account);
+            var breaches = await _client.GetAccountBreaches(account);
             breaches.Count.Should().BeGreaterThan(0);
         }
 
@@ -65,8 +62,7 @@ namespace PwnMe.Tests
         [InlineData("test@example.com", "000webhost.com")]
         public async Task GetAccountBreaches_FilteredForDomain_ValidAccountGiven_ShouldPass(string account, string domain)
         {
-            var client = new HibpClient();
-            var breaches = await client.GetAccountBreaches(account, domain: domain);
+            var breaches = await _client.GetAccountBreaches(account, domain: domain);
             breaches.Count.Should().Be(1);
         }
 
@@ -74,8 +70,7 @@ namespace PwnMe.Tests
         [InlineData("test@example.com")]
         public async Task GetAccountBreaches_TruncatedResponse_ValidAccountGiven_ShouldPass(string account)
         {
-            var client = new HibpClient();
-            var breaches = await client.GetAccountBreaches(account, truncated: true);
+            var breaches = await _client.GetAccountBreaches(account, truncated: true);
             breaches.Count.Should().BeGreaterThan(0);
             breaches[0].Name.Should().NotBeNull();
             breaches[0].Title.Should().BeNull();
@@ -84,8 +79,7 @@ namespace PwnMe.Tests
         [Fact]
         public async Task GetBreaches_ShouldPass()
         {
-            var client = new HibpClient();
-            var breaches = await client.GetBreaches();
+            var breaches = await _client.GetBreaches();
             breaches.Count.Should().BeGreaterOrEqualTo(1);
         }
 
@@ -93,8 +87,7 @@ namespace PwnMe.Tests
         [InlineData("adobe.com")]
         public async Task GetBreaches_DomainGiven_ShouldPass(string domain)
         {
-            var client = new HibpClient();
-            var breaches = await client.GetBreaches(domain: domain);
+            var breaches = await _client.GetBreaches(domain: domain);
             breaches.Count.Should().Be(1);
         }
 
