@@ -81,5 +81,22 @@ namespace PwnMe.Tests
             breaches[0].Title.Should().BeNull();
         }
 
+        [Fact]
+        public async Task GetBreaches_ShouldPass()
+        {
+            var client = new HibpClient();
+            var breaches = await client.GetBreaches();
+            breaches.Count.Should().BeGreaterOrEqualTo(1);
+        }
+
+        [Theory]
+        [InlineData("adobe.com")]
+        public async Task GetBreaches_DomainGiven_ShouldPass(string domain)
+        {
+            var client = new HibpClient();
+            var breaches = await client.GetBreaches(domain: domain);
+            breaches.Count.Should().Be(1);
+        }
+
     }
 }
