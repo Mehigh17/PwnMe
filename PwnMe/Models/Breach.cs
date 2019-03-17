@@ -2,7 +2,7 @@ using System;
 
 namespace PwnMe.Models
 {
-    public class AccountBreach
+    public class Breach
     {
 
         public string Name { get; set; }

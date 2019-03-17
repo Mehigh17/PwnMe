@@ -84,7 +84,7 @@ namespace PwnMe
             throw GetApiException(response.StatusCode);
         }
 
-        public async Task<IReadOnlyList<AccountBreach>> GetAccountBreaches(string account, bool truncated = false, string domain = "", bool includeUnverified = false)
+        public async Task<IReadOnlyList<Breach>> GetAccountBreaches(string account, bool truncated = false, string domain = "", bool includeUnverified = false)
         {
             var uriBuilder = new UriBuilder($"{ApiEndpointUri}/breachedaccount/{account}");
             var parameters = HttpUtility.ParseQueryString(string.Empty);
@@ -101,7 +101,7 @@ namespace PwnMe
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var breaches = JsonConvert.DeserializeObject<AccountBreach[]>(data);
+                var breaches = JsonConvert.DeserializeObject<Breach[]>(data);
                 return breaches;
             }
 
