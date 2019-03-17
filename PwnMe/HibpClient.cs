@@ -27,7 +27,7 @@ namespace PwnMe
         public HibpClient()
         {
             _httpClient = new HttpClient();
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "PwnMe C# API Wrapper");
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "PwnMe-C#-API-Wrapper");
 
             _hasher = SHA1.Create();
         }
