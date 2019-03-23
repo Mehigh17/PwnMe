@@ -1,0 +1,1 @@
+&('dotnet') ('test', '--no-build', '/p:CollectCoverage=true', '/p:Exclude=\"[xunit*]*,[PwnMe.Tests]*\"')
