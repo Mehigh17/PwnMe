@@ -57,7 +57,7 @@ if(isPwdBreached)
 var client = new PwnMeClient();
 
 // Gets all the breaches for a given account on 'some.domain', including all the additional details and excluding the unverified breaches.
-var adobeBreaches = await client.GetAccountBreaches("test@accou.nt", truncated: false, domain: "some.domain", includeUnverified: false);
+var breaches = await client.GetAccountBreaches("test@accou.nt", truncated: false, domain: "some.domain", includeUnverified: false);
 ```
 
 #### Get breaches for a domain
